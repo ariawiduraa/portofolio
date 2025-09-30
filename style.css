@@ -373,36 +373,51 @@ body {
     transition: all 0.4s ease;
     overflow: hidden;
     border: 1px solid var(--bg-medium);
+    display: flex; /* Ditambahkan untuk menyamakan tinggi */
+    flex-direction: column; /* Ditambahkan untuk menyamakan tinggi */
 }
 .portfolio-card:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 .card-image {
-    height: 200px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f4f8;
     overflow: hidden;
+    min-height: 200px;
+    position: relative;
 }
+
 .project-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 0.3s ease;
+    max-width: 100%;
+    max-height: 250px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
+
+
+
+
 .image-nav {
     position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
+    top: 50%;                /* masih tengah, tapi */
+    transform: translateY(-50%); 
+    width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 0 1rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 5;
+    pointer-events: none;    /* biar ga blok klik */
 }
-.portfolio-card:hover .image-nav { opacity: 1; }
+
+.image-nav .nav-btn {
+    pointer-events: auto;    /* tombol bisa diklik */
+}
+
+
 .nav-btn {
     background: rgba(255, 255, 255, 0.9);
     border: none;
@@ -413,11 +428,34 @@ body {
     color: var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;
+    pointer-events: auto; /* biar tombol tetap bisa diklik */
 }
+
+.portfolio-card:hover .image-nav { opacity: 1; }
+/* .nav-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+} */
 .nav-btn:hover { background: white; transform: scale(1.1); }
-.card-content { padding: 2rem; }
+.card-content { 
+    padding: 2rem; 
+    display: flex; /* Ditambahkan untuk meratakan konten */
+    flex-direction: column; /* Ditambahkan untuk meratakan konten */
+    flex-grow: 1; /* Ditambahkan untuk meratakan konten */
+}
 .card-title { font-size: 1.4rem; margin-bottom: 1rem; }
-.card-description { color: var(--text-light); margin-bottom: 1.5rem; }
+.card-description { 
+    color: var(--text-light); 
+    margin-bottom: 1.5rem; 
+    flex-grow: 1; /* DIPERBAIKI: Mendorong konten bawah agar rata */
+}
 .card-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
 .tech-tag {
     background: var(--primary-gradient);
