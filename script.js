@@ -1,88 +1,99 @@
-/* ============================================== */
-/* SCRIPT.JS (VERSI FINAL & LENGKAP)      */
-/* ============================================== */
-
-// Menjalankan semua script setelah seluruh halaman HTML selesai dimuat
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- LOGIKA UNTUK MENU HAMBURGER MOBILE ---
-    const hamburgerButton = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('nav-menu');
+    // --- LOGIKA MENU HAMBURGER ---
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
 
-    if (hamburgerButton && mobileMenu) {
-        hamburgerButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('show');
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
         });
 
-        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
+        navMenu.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.remove('show');
+                navMenu.classList.remove('show');
             });
         });
     }
 
-    // --- EFEK NAVBAR BERUBAH STYLE SAAT SCROLL ---
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.style.backgroundColor = 'rgba(29, 78, 216, 0.95)'; // Warna lebih gelap dengan blur
-                navbar.style.backdropFilter = 'blur(10px)';
-            } else {
-                navbar.style.backgroundColor = ''; // Kembali ke style asli dari CSS
-                navbar.style.backdropFilter = 'none';
+    // --- EFEK ACTIVE LINK DI NAVIGASI SAAT SCROLL ---
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-menu a.nav-link');
+
+    const activateMenuLink = () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (window.pageYOffset >= sectionTop - 75) {
+                current = section.getAttribute('id');
             }
         });
-    }
 
-    // --- EFEK ANIMASI KARTU MUNCUL SAAT SCROLL ---
-    const cardsToAnimate = document.querySelectorAll('.portfolio-card, .certificate-card, .timeline-content');
-    
-    const animateOnScroll = () => {
-        cardsToAnimate.forEach(card => {
-            if (card.getBoundingClientRect().top < window.innerHeight - 100) {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
             }
         });
     };
 
+    window.addEventListener('scroll', activateMenuLink);
+    activateMenuLink();
+
+    // --- ANIMASI KARTU SAAT SCROLL ---
+    const cards = document.querySelectorAll('.portfolio-card, .certificate-card, .timeline-content');
+    const animateOnScroll = () => {
+        cards.forEach(c => {
+            if (c.getBoundingClientRect().top < window.innerHeight - 100) {
+                c.style.opacity = '1'; c.style.transform = 'translateY(0)';
+            }
+        });
+    };
+    cards.forEach(c => {
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(30px)';
+        c.style.transition = 'opacity .6s ease, transform .6s ease';
+    });
     window.addEventListener('scroll', animateOnScroll);
-    animateOnScroll(); // Panggil sekali saat load
+    animateOnScroll();
 });
 
-// --- FUNGSI GLOBAL (DI LUAR DOMContentLoaded) ---
 
+
+// --- FUNGSI UNTUK TOMBOL "SHOW MORE" SERTIFIKAT ---
 function toggleCertificates() {
     const btn = document.querySelector('.show-more-btn');
     const isExpanded = btn.classList.toggle('expanded');
-    
-    document.querySelectorAll('.additional-certificate').forEach((cert, index) => {
-        if (isExpanded) {
-            cert.style.display = 'block';
-        } else {
-            cert.style.display = 'none';
-        }
-    });
 
-    btn.querySelector('.btn-text').textContent = isExpanded ? 'Show Less' : 'Show More Certificates';
-    const icon = btn.querySelector('.btn-icon');
-    icon.classList.toggle('fa-chevron-down', !isExpanded);
-    icon.classList.toggle('fa-chevron-up', isExpanded);
+    document.querySelectorAll('.additional-certificate')
+        .forEach((c) => {
+            c.classList.toggle('show', isExpanded);
+        });
+
+    // Mengubah teks tombol
+    btn.querySelector('.btn-text').textContent = isExpanded ? 'Show Less Certificates' : 'Show More Certificates';
+
 }
 
-function changeImage(button, direction) {
-    const imageContainer = button.closest('.card-image').querySelector('.project-image-container');
-    const images = imageContainer.querySelectorAll('.project-image');
-    let currentIndex = 0;
 
-    images.forEach((img, index) => {
+// --- FUNGSI UNTUK KARUSEL GAMBAR PORTFOLIO ---
+function changeImage(button, dir) {
+    const card = button.closest('.portfolio-card');
+    if (!card) return;
+
+    const imgs = card.querySelectorAll('.project-image');
+    if (imgs.length === 0) return;
+
+    let currentIndex = -1;
+    imgs.forEach((img, i) => {
         if (img.style.display !== 'none') {
-            currentIndex = index;
+            currentIndex = i;
         }
     });
 
-    images[currentIndex].style.display = 'none';
-    let nextIndex = (currentIndex + direction + images.length) % images.length;
-    images[nextIndex].style.display = 'block';
+    if (currentIndex === -1) currentIndex = 0;
+
+    imgs[currentIndex].style.display = 'none';
+    const nextIndex = (currentIndex + dir + imgs.length) % imgs.length;
+    imgs[nextIndex].style.display = 'block';
 }
