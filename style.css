@@ -662,6 +662,10 @@ body {
     background: #25D366;
 }
 
+.social-link.linktree {
+    background: #45c958;
+}
+
 .support {
     padding: 40px 0;
 }
